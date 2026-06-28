@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Click Invite — دعوتك تجربة لا تُنسى</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #06060A;
+      --bg2: #0D0D14;
+      --gold: #C9A84C;
+      --gold-light: #E8C96A;
+      --gold-dim: rgba(201, 168, 76, 0.15);
+      --gold-border: rgba(201, 168, 76, 0.3);
+      --purple: #2D1B69;
+      --purple-glow: rgba(45, 27, 105, 0.4);
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass2: rgba(201, 168, 76, 0.05);
+      --text: #F0EBE0;
+      --text-dim: rgba(240, 235, 224, 0.55);
+      --radius: 18px;
+      --font-ar: 'Tajawal', sans-serif;
+      --font-display: 'Cormorant Garamond', serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-ar);
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CURSOR ── */
+    #cursor {
+      position: fixed;
+      width: 18px;
+      height: 18px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s, width 0.2s, height 0.2s, opacity 0.2s;
+      mix-blend-mode: screen;
+    }
+
+    #cursor-ring {
+      position: fixed;
+      width: 38px;
+      height: 38px;
+      border: 1.5px solid rgba(201, 168, 76, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease-out, width 0.2s, height 0.2s;
+    }
+
+    body:hover #cursor {
+      opacity: 1;
+    }
+
+    @media (hover: none) {
+
+      #cursor,
+      #cursor-ring {
+        display: none;
+      }
+
+      body {
+        cursor: auto;
+      }
+    }
+
+    /* ── CANVAS ── */
+    #particles-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.7;
+    }
+
+    /* ── PAGE WRAPPER ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 16px 60px;
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 60px 0 40px;
+      position: relative;
+    }
+
+    .logo-wrap {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .logo-ornament {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .logo-line {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+    }
+
+    .logo-line.right {
+      background: linear-gradient(90deg, var(--gold), transparent);
+    }
+
+    .logo-diamond {
+      width: 7px;
+      height: 7px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      animation: pulse-diamond 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-diamond {
+
+      0%,
+      100% {
+        transform: rotate(45deg) scale(1);
+        box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.4);
+      }
+
+      50% {
+        transform: rotate(45deg) scale(1.3);
+        box-shadow: 0 0 12px 4px rgba(201, 168, 76, 0.2);
+      }
+    }
+
+    .logo-text {
+      font-family: var(--font-display);
+      font-size: 2.6rem;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      color: var(--text);
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .logo-text span {
+      color: var(--gold);
+    }
+
+    .logo-sub {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.38em;
+      color: var(--gold);
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    .tagline {
+      margin-top: 20px;
+      font-size: 1.15rem;
+      font-weight: 300;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+      direction: rtl;
+    }
+
+    .tagline em {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--gold-light);
+      font-size: 1.3rem;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 5px 16px;
+      border: 1px solid var(--gold-border);
+      border-radius: 50px;
+      font-size: 0.72rem;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      background: var(--gold-dim);
+      text-transform: uppercase;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section-label span {
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .section-label::before,
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold-border), transparent);
+    }
+
+    .section-label::before {
+      background: linear-gradient(90deg, transparent, var(--gold-border));
+    }
+
+    /* ── GLASS CARD ── */
+    .glass {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201, 168, 76, 0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* ── TOOL SECTION ── */
+    .tool-section {
+      margin-bottom: 32px;
+    }
+
+    .tool-card {
+      padding: 28px 22px;
+    }
+
+    .tool-title {
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      direction: rtl;
+    }
+
+    .tool-subtitle {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      margin-bottom: 22px;
+      direction: rtl;
+    }
+
+    .tool-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--gold);
+      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .tool-input {
+      width: 100%;
+      padding: 13px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--gold-border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: var(--font-ar);
+      font-size: 0.95rem;
+      direction: rtl;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+      -webkit-appearance: none;
+    }
+
+    .tool-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.12);
+    }
+
+    .tool-input[type="date"] {
+      direction: ltr;
+      text-align: left;
+      color-scheme: dark;
+    }
+
+    .tool-input::placeholder {
+      color: rgba(240, 235, 224, 0.3);
+    }
+
+    .lang-toggle {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      direction: ltr;
+    }
+
+    .lang-btn {
+      flex: 1;
+      padding: 8px;
+      background: transparent;
+      border: 1px solid var(--gold-border);
+      border-radius: 10px;
+      color: var(--text-dim);
+      font-family: var(--font-ar);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .lang-btn.active {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .btn-generate {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #C9A84C, #A87B2C);
+      border: none;
+      border-radius: 12px;
+      color: #06060A;
+      font-family: var(--font-ar);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-generate::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 40%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.25);
+      transform: skewX(-20deg);
+      transition: left 0.5s;
+    }
+
+    .btn-generate:hover::after {
+      left: 130%;
+    }
+
+    .btn-generate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(201, 168, 76, 0.35);
+    }
+
+    .btn-generate:active {
+      transform: translateY(0);
+    }
+
+    /* ── COUNTDOWN DISPLAY ── */
+    .countdown-display {
+      margin-top: 22px;
+      display: none;
+    }
+
+    .countdown-display.show {
+      display: block;
+    }
+
+    .countdown-card-preview {
+      background: linear-gradient(145deg, #0D0D18, #12101F);
+      border: 1px solid var(--gold-border);
+      border-radius: 16px;
+      padding: 26px 20px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .countdown-card-preview::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .countdown-event-name {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-style: italic;
+      color: var(--gold-light);
+      margin-bottom: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    .countdown-event-date {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-bottom: 22px;
+      letter-spacing: 0.08em;
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .countdown-unit {
+      background: rgba(201, 168, 76, 0.08);
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      border-radius: 10px;
+      padding: 10px 4px;
+    }
+
+    .countdown-num {
+      font-family: var(--font-display);
+      font-size: 1.9rem;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1;
+      display: block;
+      min-height: 2.1rem;
+    }
+
+    .countdown-label {
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+      display: block;
+      letter-spacing: 0.06em;
+    }
+
+    .countdown-brand {
+      font-size: 0.65rem;
+      color: rgba(201, 168, 76, 0.5);
+      letter-spacing: 0.12em;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .countdown-brand::before,
+    .countdown-brand::after {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: rgba(201, 168, 76, 0.3);
+    }
+
+    .btn-share {
+      width: 100%;
+      margin-top: 14px;
+      padding: 13px;
+      background: transparent;
+      border: 1.5px solid var(--gold);
+      border-radius: 12px;
+      color: var(--gold);
+      font-family: var(--font-ar);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-share:hover {
+      background: var(--gold-dim);
+      box-shadow: 0 0 20px rgba(201, 168, 76, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .btn-share::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 35%;
+      height: 200%;
+      background: rgba(201, 168, 76, 0.15);
+      transform: skewX(-20deg);
+      transition: left 0.5s;
+    }
+
+    .btn-share:hover::after {
+      left: 130%;
+    }
+
+    .past-event-msg {
+      text-align: center;
+      font-size: 1.1rem;
+      color: var(--gold);
+      padding: 16px 0 4px;
+      font-family: var(--font-display);
+      font-style: italic;
+    }
+
+    /* ── SERVICES GRID ── */
+    .services-section {
+      margin-bottom: 32px;
+    }
+
+    .services-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .service-card {
+      padding: 20px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: transform 0.25s, box-shadow 0.25s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .service-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(201, 168, 76, 0.15);
+      border-color: rgba(201, 168, 76, 0.55);
+    }
+
+    .service-icon {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      background: var(--gold-dim);
+      border: 1px solid var(--gold-border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .service-info {
+      flex: 1;
+      text-align: right;
+    }
+
+    .service-name {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 3px;
+      color: var(--text);
+    }
+
+    .service-desc {
+      font-size: 0.77rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .service-cta {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #C9A84C, #A87B2C);
+      border: none;
+      border-radius: 8px;
+      color: #06060A;
+      font-family: var(--font-ar);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .service-cta:hover {
+      box-shadow: 0 4px 20px rgba(201, 168, 76, 0.4);
+      transform: scale(1.04);
+    }
+
+    .service-cta::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 35%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: skewX(-20deg);
+      transition: left 0.4s;
+    }
+
+    .service-cta:hover::after {
+      left: 130%;
+    }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials-section {
+      margin-bottom: 32px;
+    }
+
+    .testimonials-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .testimonial-card {
+      padding: 20px;
+      animation: float-card 6s ease-in-out infinite;
+    }
+
+    .testimonial-card:nth-child(2) {
+      animation-delay: -2s;
+    }
+
+    .testimonial-card:nth-child(3) {
+      animation-delay: -4s;
+    }
+
+    @keyframes float-card {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-4px);
+      }
+    }
+
+    .stars {
+      color: var(--gold);
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .testimonial-text {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--text-dim);
+      margin-bottom: 14px;
+      direction: rtl;
+      font-style: italic;
+    }
+
+    .testimonial-name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--gold);
+      text-align: left;
+      direction: ltr;
+    }
+
+    .testimonial-meta {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      text-align: left;
+      direction: ltr;
+    }
+
+    /* ── CONTACT STRIP ── */
+    .contact-section {
+      margin-bottom: 32px;
+    }
+
+    .contact-card {
+      padding: 28px 20px;
+      text-align: center;
+    }
+
+    .contact-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      direction: rtl;
+    }
+
+    .contact-sub {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-bottom: 22px;
+      direction: rtl;
+    }
+
+    .contact-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .contact-btn {
+      flex: 1;
+      max-width: 180px;
+      padding: 14px 12px;
+      border-radius: 12px;
+      border: none;
+      font-family: var(--font-ar);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 35%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: skewX(-20deg);
+      transition: left 0.45s;
+    }
+
+    .contact-btn:hover::after {
+      left: 130%;
+    }
+
+    .contact-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-wa {
+      background: linear-gradient(135deg, #25D366, #128C3E);
+      color: white;
+    }
+
+    .btn-wa:hover {
+      box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+    }
+
+    .btn-ig {
+      background: linear-gradient(135deg, #E1306C, #833AB4, #405DE6);
+      color: white;
+    }
+
+    .btn-ig:hover {
+      box-shadow: 0 8px 24px rgba(225, 48, 108, 0.35);
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 20px 0 10px;
+      font-size: 0.68rem;
+      color: rgba(201, 168, 76, 0.35);
+      letter-spacing: 0.1em;
+      direction: ltr;
+    }
+
+    /* ── CONFETTI ── */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+      display: none;
+    }
+
+    /* ── HIDDEN CANVAS FOR DOWNLOAD ── */
+    #download-canvas {
+      display: none;
+    }
+
+    /* ── SHIMMER TEXT ── */
+    .shimmer {
+      background: linear-gradient(90deg, var(--text) 0%, var(--gold-light) 50%, var(--text) 100%);
+      background-size: 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer-anim 3s linear infinite;
+    }
+
+    @keyframes shimmer-anim {
+      0% {
+        background-position: 200% center;
+      }
+
+      100% {
+        background-position: -200% center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="particles-canvas"></canvas>
+  <canvas id="confetti-canvas"></canvas>
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <div class="page">
+
+    <!-- HERO -->
+    <section class="hero fade-in">
+      <div class="logo-wrap">
+        <div class="logo-ornament">
+          <div class="logo-line"></div>
+          <div class="logo-diamond"></div>
+          <div class="logo-line right"></div>
+        </div>
+        <div class="logo-text">Click <span>Invite</span></div>
+        <div class="logo-sub">Digital Luxury Invitations</div>
+      </div>
+      <p class="tagline"><em>دعوتك تجربة لا تُنسى</em></p>
+      <span class="hero-badge">@click__invite</span>
+    </section>
+
+    <!-- FREE TOOL -->
+    <section class="tool-section fade-in">
+      <div class="section-label"><span>✦ الأداة المجانية</span></div>
+      <div class="glass tool-card">
+        <h2 class="tool-title shimmer">اعرف كم باقي على مناسبتك ✨</h2>
+        <p class="tool-subtitle">أدخل اسم مناسبتك وتاريخها — واحصل على عداد تنازلي جاهز للمشاركة</p>
+
+        <div class="lang-toggle">
+          <button class="lang-btn active" id="lang-ar" onclick="setLang('ar')">عربي 🇸🇦</button>
+          <button class="lang-btn" id="lang-en" onclick="setLang('en')">English 🌍</button>
+        </div>
+
+        <div class="tool-inputs">
+          <div class="input-wrap">
+            <label id="label-name">✦ اسم المناسبة</label>
+            <input type="text" class="tool-input" id="event-name" placeholder="مثال: حفل زفاف نور وسالم" maxlength="40">
+          </div>
+          <div class="input-wrap">
+            <label id="label-date">✦ تاريخ المناسبة</label>
+            <input type="date" class="tool-input" id="event-date">
+          </div>
+        </div>
+
+        <button class="btn-generate" onclick="generateCountdown()">
+          <span id="gen-btn-text">✨ اكتشف كم باقي</span>
+        </button>
+
+        <div class="countdown-display" id="countdown-display">
+          <div class="countdown-card-preview" id="countdown-card">
+            <div class="countdown-event-name" id="cd-event-name">—</div>
+            <div class="countdown-event-date" id="cd-event-date">—</div>
+            <div class="countdown-grid">
+              <div class="countdown-unit">
+                <span class="countdown-num" id="cd-days">00</span>
+                <span class="countdown-label" id="cd-days-label">يوم</span>
+              </div>
+              <div class="countdown-unit">
+                <span class="countdown-num" id="cd-hours">00</span>
+                <span class="countdown-label" id="cd-hours-label">ساعة</span>
+              </div>
+              <div class="countdown-unit">
+                <span class="countdown-num" id="cd-mins">00</span>
+                <span class="countdown-label" id="cd-mins-label">دقيقة</span>
+              </div>
+              <div class="countdown-unit">
+                <span class="countdown-num" id="cd-secs">00</span>
+                <span class="countdown-label" id="cd-secs-label">ثانية</span>
+              </div>
+            </div>
+            <div class="countdown-brand" id="cd-brand">صُمم بـ Click Invite ✦ clickinvite.app</div>
+          </div>
+          <button class="btn-share" onclick="downloadCard()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span id="share-btn-text">شارك العداد — تحميل الصورة</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="services-section fade-in">
+      <div class="section-label"><span>✦ خدماتنا</span></div>
+      <div class="services-grid">
+
+        <a class="glass service-card" href="https://wa.me/YOUR_NUMBER?text=أريد طلب دعوة رقمية فاخرة" target="_blank">
+          <div class="service-icon">💌</div>
+          <div class="service-info">
+            <div class="service-name">دعوة رقمية فاخرة</div>
+            <div class="service-desc">تصميم دعوتك بأناقة لا مثيل لها مع أنيميشن وموسيقى</div>
+          </div>
+          <button class="service-cta">اطلب الآن</button>
+        </a>
+
+        <a class="glass service-card" href="https://wa.me/YOUR_NUMBER?text=أريد صفحة شخصية Link in Bio" target="_blank">
+          <div class="service-icon">🔗</div>
+          <div class="service-info">
+            <div class="service-name">صفحة شخصية (Link in Bio)</div>
+            <div class="service-desc">صفحتك الرقمية الأنيقة في رابط واحد يعبّر عنك</div>
+          </div>
+          <button class="service-cta">اطلب الآن</button>
+        </a>
+
+        <a class="glass service-card" href="https://wa.me/YOUR_NUMBER?text=أريد موقع تخرج أو خطوبة أو زفاف"
+          target="_blank">
+          <div class="service-icon">💍</div>
+          <div class="service-info">
+            <div class="service-name">موقع زفاف / تخرج / خطوبة</div>
+            <div class="service-desc">موقع كامل يحكي قصتك ويستقبل ضيوفك بأجمل صورة</div>
+          </div>
+          <button class="service-cta">اطلب الآن</button>
+        </a>
+
+        <a class="glass service-card" href="https://wa.me/YOUR_NUMBER?text=أريد تصميم بورتفوليو رقمي" target="_blank">
+          <div class="service-icon">🎨</div>
+          <div class="service-info">
+            <div class="service-name">بورتفوليو رقمي</div>
+            <div class="service-desc">اعرض أعمالك باحترافية تليق بموهبتك وطموحك</div>
+          </div>
+          <button class="service-cta">اطلب الآن</button>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials-section fade-in">
+      <div class="section-label"><span>✦ قالوا عنّا</span></div>
+      <div class="testimonials-list">
+
+        <div class="glass testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"اجمل الذكريات تصنع تصاميم ولا اروع Click Invite 🤍"</p>
+          <div class="testimonial-name">hala_aldbobi </div>
+          <div class="testimonial-meta">دعوة تخرج — عمان</div>
+        </div>
+
+        <div class="glass testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"الصفحة الشخصية اللي صمّموها لي غيّرت انطباع متابعيني بالكامل. احترافية بكل تفصيلة
+            ✨"</p>
+          <div class="testimonial-name">zomord</div>
+          <div class="testimonial-meta">Link in Bio — jordan</div>
+        </div>
+
+        <div class="glass testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"موقع تخرجي كان تحفة فنية! الكل بهر فيه وأصبح ذكرى لا تنسى لأجمل لحظات حياتي 🎓"
+          </p>
+          <div class="testimonial-name"> ملك الدويري</div>
+          <div class="testimonial-meta"> link in bio — الاردن</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact-section fade-in">
+      <div class="section-label"><span>✦ تواصل معنا</span></div>
+      <div class="glass contact-card">
+        <h3 class="contact-title">تواصل معنا وابدأ مناسبتك</h3>
+        <p class="contact-sub">نحن هنا لنحوّل لحظتك الخاصة إلى تجربة استثنائية</p>
+        <div class="contact-buttons">
+          <a href="https://wa.me/YOUR_NUMBER" target="_blank" class="contact-btn btn-wa">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347" />
+              <path
+                d="M12 0C5.373 0 0 5.373 0 12c0 2.138.564 4.14 1.543 5.878L.057 23.85a.5.5 0 00.611.611l6.088-1.472A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.714 9.714 0 01-5.02-1.396l-.36-.214-3.728.902.917-3.637-.234-.375A9.714 9.714 0 012.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75z" />
+            </svg>
+            واتساب
+          </a>
+          <a href="https://instagram.com/click__invite" target="_blank" class="contact-btn btn-ig">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+            </svg>
+            إنستغرام
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">Click Invite ✦ clickinvite.app ✦ @click__invite</footer>
+
+  </div>
+
+  <!-- HIDDEN CANVAS -->
+  <canvas id="download-canvas" width="900" height="600"></canvas>
+
+  <script>
+    /* ── CURSOR ── */
+    const cur = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.style.left = mx + 'px'; cur.style.top = my + 'px'; });
+    (function animRing() { rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(animRing); })();
+
+    /* ── PARTICLES ── */
+    (function () {
+      const canvas = document.getElementById('particles-canvas');
+      const ctx = canvas.getContext('2d');
+      let W, H, particles = [];
+
+      function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const GOLD = 'rgba(201,168,76,';
+      const PURPLE = 'rgba(100,60,200,';
+
+      class Particle {
+        constructor() { this.reset(true); }
+        reset(init) {
+          this.x = Math.random() * (W || 400);
+          this.y = init ? Math.random() * (H || 800) : H + 10;
+          this.r = Math.random() * 1.8 + 0.4;
+          this.vx = (Math.random() - 0.5) * 0.3;
+          this.vy = -(Math.random() * 0.6 + 0.2);
+          this.alpha = Math.random() * 0.6 + 0.1;
+          this.color = Math.random() > 0.6 ? PURPLE : GOLD;
+          this.twinkle = Math.random() * Math.PI * 2;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.twinkle += 0.03;
+          this.alpha = (Math.sin(this.twinkle) * 0.3 + 0.5) * 0.7;
+          if (this.y < -10) this.reset(false);
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = this.color + this.alpha + ')';
+          ctx.fill();
+        }
+      }
+
+      for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+      function loop() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(loop);
+      }
+      loop();
+    })();
+
+    /* ── FADE IN OBSERVER ── */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 120);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    /* ── LANGUAGE ── */
+    let currentLang = 'ar';
+    const labels = {
+      ar: {
+        name: '✦ اسم المناسبة', date: '✦ تاريخ المناسبة',
+        placeholder: 'مثال: حفل زفاف نور وسالم',
+        gen: '✨ اكتشف كم باقي', share: 'شارك العداد — تحميل الصورة',
+        days: 'يوم', hours: 'ساعة', mins: 'دقيقة', secs: 'ثانية',
+        brand: 'صُمم بـ Click Invite ✦ clickinvite.app',
+        past: '🎉 لقد مرّت هذه المناسبة — ذكرى جميلة!'
+      },
+      en: {
+        name: '✦ Event Name', date: '✦ Event Date',
+        placeholder: 'e.g. Sarah & Adam\'s Wedding',
+        gen: '✨ Reveal Countdown', share: 'Share — Download Image',
+        days: 'Days', hours: 'Hours', mins: 'Mins', secs: 'Secs',
+        brand: 'Crafted by Click Invite ✦ clickinvite.app',
+        past: '🎉 This event has passed — beautiful memory!'
+      }
+    };
+
+    function setLang(lang) {
+      currentLang = lang;
+      document.getElementById('lang-ar').classList.toggle('active', lang === 'ar');
+      document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+      const L = labels[lang];
+      document.getElementById('label-name').textContent = L.name;
+      document.getElementById('label-date').textContent = L.date;
+      document.getElementById('event-name').placeholder = L.placeholder;
+      document.getElementById('gen-btn-text').textContent = L.gen;
+      document.getElementById('share-btn-text').textContent = L.share;
+      document.getElementById('cd-days-label').textContent = L.days;
+      document.getElementById('cd-hours-label').textContent = L.hours;
+      document.getElementById('cd-mins-label').textContent = L.mins;
+      document.getElementById('cd-secs-label').textContent = L.secs;
+      document.getElementById('cd-brand').textContent = L.brand;
+      const input = document.getElementById('event-name');
+      input.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    }
+
+    /* ── COUNTDOWN ── */
+    let countdownInterval = null;
+    let targetDate = null;
+    let eventNameValue = '';
+
+    function generateCountdown() {
+      const name = document.getElementById('event-name').value.trim();
+      const date = document.getElementById('event-date').value;
+      if (!name || !date) {
+        document.getElementById('event-name').style.borderColor = 'rgba(255,80,80,0.6)';
+        document.getElementById('event-date').style.borderColor = 'rgba(255,80,80,0.6)';
+        setTimeout(() => {
+          document.getElementById('event-name').style.borderColor = '';
+          document.getElementById('event-date').style.borderColor = '';
+        }, 1200);
+        return;
+      }
+      eventNameValue = name;
+      targetDate = new Date(date + 'T00:00:00');
+      document.getElementById('cd-event-name').textContent = name;
+      const opts = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('cd-event-date').textContent = targetDate.toLocaleDateString(currentLang === 'ar' ? 'ar-SA' : 'en-GB', opts);
+
+      const display = document.getElementById('countdown-display');
+      display.classList.add('show');
+      display.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      if (countdownInterval) clearInterval(countdownInterval);
+      updateCountdown();
+      countdownInterval = setInterval(updateCountdown, 1000);
+
+      // confetti
+      launchConfetti();
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = targetDate - now;
+      const L = labels[currentLang];
+
+      if (diff <= 0) {
+        document.getElementById('cd-days').textContent = '00';
+        document.getElementById('cd-hours').textContent = '00';
+        document.getElementById('cd-mins').textContent = '00';
+        document.getElementById('cd-secs').textContent = '00';
+        clearInterval(countdownInterval);
+        return;
+      }
+
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+
+      document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+      document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+      document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
+    }
+
+    /* ── DOWNLOAD CARD ── */
+    function downloadCard() {
+      const canvas = document.getElementById('download-canvas');
+      const ctx = canvas.getContext('2d');
+      const W = 900, H = 540;
+      canvas.width = W; canvas.height = H;
+
+      // BG
+      const grad = ctx.createLinearGradient(0, 0, W, H);
+      grad.addColorStop(0, '#0D0D18');
+      grad.addColorStop(1, '#12101F');
+      ctx.fillStyle = grad;
+      ctx.roundRect(0, 0, W, H, 24);
+      ctx.fill();
+
+      // Top accent line
+      const lineGrad = ctx.createLinearGradient(0, 0, W, 0);
+      lineGrad.addColorStop(0, 'transparent');
+      lineGrad.addColorStop(0.5, '#C9A84C');
+      lineGrad.addColorStop(1, 'transparent');
+      ctx.strokeStyle = lineGrad;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, 0); ctx.lineTo(W, 0);
+      ctx.stroke();
+
+      // Gold particles (decorative dots)
+      for (let i = 0; i < 40; i++) {
+        ctx.beginPath();
+        ctx.arc(Math.random() * W, Math.random() * H, Math.random() * 1.5 + 0.3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(201,168,76,${Math.random() * 0.4 + 0.05})`;
+        ctx.fill();
+      }
+
+      const L = labels[currentLang];
+      const isAr = currentLang === 'ar';
+
+      // Event name
+      ctx.textAlign = 'center';
+      ctx.font = isAr ? 'italic 300 48px "Georgia", serif' : 'italic 300 48px "Cormorant Garamond", Georgia, serif';
+      ctx.fillStyle = '#E8C96A';
+      ctx.fillText(eventNameValue, W / 2, 130);
+
+      // Date
+      const opts = { year: 'numeric', month: 'long', day: 'numeric' };
+      const dateStr = targetDate.toLocaleDateString(isAr ? 'ar-SA' : 'en-GB', opts);
+      ctx.font = '16px sans-serif';
+      ctx.fillStyle = 'rgba(240,235,224,0.5)';
+      ctx.fillText(dateStr, W / 2, 165);
+
+      // Countdown boxes
+      const now = new Date();
+      const diff = Math.max(0, targetDate - now);
+      const vals = [
+        [Math.floor(diff / 86400000), L.days],
+        [Math.floor((diff % 86400000) / 3600000), L.hours],
+        [Math.floor((diff % 3600000) / 60000), L.mins],
+        [Math.floor((diff % 60000) / 1000), L.secs]
+      ];
+
+      const bw = 170, bh = 140, gap = 20;
+      const totalW = 4 * bw + 3 * gap;
+      const startX = (W - totalW) / 2;
+      const startY = 210;
+
+      vals.forEach(([val, label], i) => {
+        const bx = startX + i * (bw + gap);
+        // box bg
+        ctx.fillStyle = 'rgba(201,168,76,0.08)';
+        ctx.strokeStyle = 'rgba(201,168,76,0.22)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.roundRect(bx, startY, bw, bh, 12);
+        ctx.fill();
+        ctx.stroke();
+
+        // number
+        ctx.textAlign = 'center';
+        ctx.font = '300 64px "Georgia", "Cormorant Garamond", serif';
+        ctx.fillStyle = '#C9A84C';
+        ctx.fillText(String(val).padStart(2, '0'), bx + bw / 2, startY + 80);
+
+        // label
+        ctx.font = '13px sans-serif';
+        ctx.fillStyle = 'rgba(240,235,224,0.5)';
+        ctx.fillText(label, bx + bw / 2, startY + 118);
+      });
+
+      // brand
+      ctx.font = '13px sans-serif';
+      ctx.fillStyle = 'rgba(201,168,76,0.45)';
+      ctx.textAlign = 'center';
+      ctx.fillText(L.brand, W / 2, H - 28);
+
+      // Download
+      const link = document.createElement('a');
+      link.download = `click-invite-countdown-${eventNameValue.replace(/\s+/g, '-')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    /* ── CONFETTI ── */
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      canvas.style.display = 'block';
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const pieces = [];
+      const colors = ['#C9A84C', '#E8C96A', '#A87B2C', '#F0D98A', '#ffffff', '#c084fc'];
+
+      for (let i = 0; i < 120; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: -10 - Math.random() * 200,
+          vx: (Math.random() - 0.5) * 4,
+          vy: Math.random() * 4 + 2,
+          rot: Math.random() * Math.PI * 2,
+          rotV: (Math.random() - 0.5) * 0.15,
+          w: Math.random() * 8 + 4,
+          h: Math.random() * 4 + 2,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1
+        });
+      }
+
+      let frame = 0;
+      function tick() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        frame++;
+        const done = pieces.every(p => p.alpha <= 0);
+        if (done || frame > 130) {
+          canvas.style.display = 'none';
+          return;
+        }
+        pieces.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.12;
+          p.rot += p.rotV;
+          if (frame > 80) p.alpha -= 0.025;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        });
+        requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    /* ── INIT FADE ── */
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.fade-in').forEach((el, i) => {
+        setTimeout(() => el.classList.add('visible'), i * 160 + 100);
+      });
+    });
+  </script>
+</body>
+
+</html>
